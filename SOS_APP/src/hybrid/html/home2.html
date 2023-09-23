@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SOSアプリ（防災情報）</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            border: none;
+            outline: none;
+        }
+
+        .navtop,
+        .navbot {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .navtop button,
+        .contents button {
+            font-size: 180%;
+            border-radius: 0;
+            width: 50%;
+        }
+
+        .navtop button {
+            height: 60px;
+        }
+
+        .navtop button.disaster {
+            background-color: rgb(0, 0, 100);
+            color: white;
+        }
+
+        .navtop button.prevention {
+            background-color: red;
+            color: white;
+        }
+
+        .contents {
+            width: 100%;
+            padding: 1% 2%;
+        }
+
+        .contents button.genre {
+            width: 96%;
+            margin: 2% 2%;
+            height: 28vw;
+            background-color: rgb(255, 145, 0);
+        }
+
+        .navbot {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+
+        .navbot button {
+            flex: 1;
+            margin: 0 1%;
+            background-color: red;
+            height: 15vw;
+        }
+
+        .navbot img {
+            margin: auto;
+            width: 30%;
+            height: 70%;
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <div class="navtop">
+        <button onclick="link1()" class="disaster">災害</button>
+        <button onclick="link2()" class="prevention">防災</button>
+    </div>
+
+    <div class="contents">
+        <button onclick="link11()" class="genre">飲料掲示板</button>
+        <button onclick="link12()" class="genre">食料掲示板</button>
+        <button onclick="link13()" class="genre">持ち物掲示板</button>
+        <button onclick="link14()" class="genre">その他掲示板</button>
+    </div>
+
+    <div class="navbot">
+        <button onclick="link111()">
+            <img src="./core/images/home.png">
+        </button>
+        <button onclick="link112()">
+            <img src="./core/images/plus.png">
+        </button>
+        <button onclick="link113()">
+            <img src="./core/images/search.png">
+        </button>
+    </div>
+
+    <script>
+        function link1() {
+            window.location.href = "./home.html";
+        }
+
+        function link2() {
+            window.location.href = "./home2.html";
+        }
+
+        function link11() {
+            window.location.href = "./core/home2_info/drinks2.html";
+        }
+
+        function link12() {
+            window.location.href = "./core/home2_info/foods2.html";
+        }
+
+        function link13() {
+            window.location.href = "./core/home2_info/goods2.html";
+        }
+
+        function link14() {
+            window.location.href = "./core/home2_info/other2.html";
+        }
+
+        function link111() {
+            window.location.href = "./home2.html";
+        }
+
+        function link112() {
+            window.location.href = "./plus.html";
+        }
+
+        function link113() {
+            window.location.href = "./search.html";
+        }
+
+    </script>
+</body>
+
+</html>

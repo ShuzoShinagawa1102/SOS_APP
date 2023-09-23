@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>皆の災害情報</title>
+    <style>
+
+        .navbar {
+            background-color: red;
+            padding: 10px 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    
+        .navbar .back-button {
+            background-color: white;
+            color: red;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    
+        .navbar .back-button:hover {
+            background-color: #f7f7f7;
+        }
+    
+        .filter-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+    
+        .filterbutton {
+            width: 4em;
+            height: 2em;
+            text-align: center;
+            color: white;
+            background-color: rgb(0, 98, 255);
+            font-size: 80%;
+        }
+    
+        .heart {
+            position: absolute;
+            right: 20px;
+            bottom: 10px;
+        }
+
+        .heart img {
+            width: 1em;
+            height: 0.85em;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .heart span {
+            vertical-align: middle;
+        }
+        
+    
+        .post {
+            background-color: antiquewhite;
+            border-bottom: solid 2px blue;
+            padding: 10px;
+            position: relative;
+        }
+
+        .post p {
+            margin: 5px 0;
+        }
+        img.heart {
+            width: 1em;
+            height: 0.85em;
+            margin-left: 5px;
+            padding: 0;
+        }
+        .filter-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="navbar">
+            <button class="back-button" onclick="window.location.href='../../home.html';">戻る</button>
+            <span>飲料掲示板</span>
+        </div>
+    
+        <div class="filter-area">
+            <div></div>
+            <div class="filter-controls">
+                <label for="prefecture">都道府県:</label>
+                <select id="prefecture">
+                    <option value="">全国</option>
+                    <option value="北海道">北海道</option>
+                    <option value="青森県">青森県</option>
+                    <option value="岩手県">岩手県</option>
+                    <option value="宮城県">宮城県</option>
+                    <option value="秋田県">秋田県</option>
+                    <option value="山形県">山形県</option>
+                    <option value="福島県">福島県</option>
+                    <option value="茨城県">茨城県</option>
+                    <option value="栃木県">栃木県</option>
+                    <option value="群馬県">群馬県</option>
+                    <option value="埼玉県">埼玉県</option>
+                    <option value="千葉県">千葉県</option>
+                    <option value="東京都">東京都</option>
+                    <option value="神奈川県">神奈川県</option>
+                    <option value="新潟県">新潟県</option>
+                    <option value="富山県">富山県</option>
+                    <option value="石川県">石川県</option>
+                    <option value="福井県">福井県</option>
+                    <option value="山梨県">山梨県</option>
+                    <option value="長野県">長野県</option>
+                    <option value="岐阜県">岐阜県</option>
+                    <option value="静岡県">静岡県</option>
+                    <option value="愛知県">愛知県</option>
+                    <option value="三重県">三重県</option>
+                    <option value="滋賀県">滋賀県</option>
+                    <option value="京都府">京都府</option>
+                    <option value="大阪府">大阪府</option>
+                    <option value="兵庫県">兵庫県</option>
+                    <option value="奈良県">奈良県</option>
+                    <option value="和歌山県">和歌山県</option>
+                    <option value="鳥取県">鳥取県</option>
+                    <option value="島根県">島根県</option>
+                    <option value="岡山県">岡山県</option>
+                    <option value="広島県">広島県</option>
+                    <option value="山口県">山口県</option>
+                    <option value="徳島県">徳島県</option>
+                    <option value="香川県">香川県</option>
+                    <option value="愛媛県">愛媛県</option>
+                    <option value="高知県">高知県</option>
+                    <option value="福岡県">福岡県</option>
+                    <option value="佐賀県">佐賀県</option>
+                    <option value="長崎県">長崎県</option>
+                    <option value="熊本県">熊本県</option>
+                    <option value="大分県">大分県</option>
+                    <option value="宮崎県">宮崎県</option>
+                    <option value="鹿児島県">鹿児島県</option>
+                    <option value="沖縄県">沖縄県</option>
+                </select>
+                <button class="filterbutton">適用</button>
+            </div>
+        </div>
+
+        <div id="postsContainer">
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js';
+        import { getFirestore, collection, doc, updateDoc, getDocs, query, where, getDoc } from 'https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCnvOLOgM8A7888OnyZQUtgjPadc-aUGTc",
+            authDomain: "appsos-3bdab.firebaseapp.com",
+            projectId: "appsos-3bdab",
+            storageBucket: "appsos-3bdab.appspot.com",
+            messagingSenderId: "781085116494",
+            appId: "1:781085116494:web:fe579a52fac5615a361b1f",
+            measurementId: "G-0DKFDY6YQP"
+        };
+        const filterButton = document.querySelector('.filterbutton');
+        filterButton.addEventListener('click', applyFilter);
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const postsContainer = document.getElementById('postsContainer');
+
+        function renderPost(post) {
+        const postDiv = document.createElement('div');
+        postDiv.classList.add('post');
+        postDiv.innerHTML = `
+            <p>${post.prefecture}</p>
+            <p>${post.date}</p>
+            <p><strong>名前:</strong> ${post.name}</p>
+            <p><strong>内容:</strong> ${post.content}</p>
+            <div class="heart">
+                <img class="like-button heart" src="../images/heart.png" data-post-id="${post.id}">
+                <span>${post.likes}</span> 
+            </div>
+        `;
+        postsContainer.appendChild(postDiv);
+
+        const likeButton = postDiv.querySelector('.like-button');
+            likeButton.addEventListener('click', function() {
+                likePost(post.id);
+            });
+        }
+
+        function likePost(postId) {
+            const postRef = doc(db, 'posts', postId);
+            let likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+
+            const updateUIForPost = (postId, likes) => {
+                const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+                if (postElement) {
+                    const likeSpan = postElement.nextElementSibling;
+                    if (likeSpan) {
+                        likeSpan.textContent = likes;
+                    }
+                }
+            };
+
+            if (likedPosts.includes(postId)) {
+                getDoc(postRef).then(docSnapshot => {
+                    if (docSnapshot.exists()) {
+                        const likes = docSnapshot.data().likes || 0;
+                        const newLikes = Math.max(likes - 1, 0);
+                        updateDoc(postRef, { likes: newLikes }).then(() => {
+                            updateUIForPost(postId, newLikes);
+                        });
+                    }
+                });
+                likedPosts = likedPosts.filter(id => id !== postId);
+            } else {
+                getDoc(postRef).then(docSnapshot => {
+                    if (docSnapshot.exists()) {
+                        const likes = docSnapshot.data().likes || 0;
+                        const newLikes = likes + 1;
+                        updateDoc(postRef, { likes: newLikes }).then(() => {
+                            updateUIForPost(postId, newLikes);
+                        });
+                    }
+                });
+                likedPosts.push(postId);
+            }
+
+            localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+        }
+        const selectedType = '防災'; // '災害' または '防災'
+        const selectedGenre = '飲料'; // '飲料', '食料', '持ち物', または 'その他'
+
+        function applyFilter() {
+            postsContainer.innerHTML = '';
+            const selectedPrefecture = document.getElementById('prefecture').value;
+            let postQuery = collection(db, 'posts');
+            if (selectedPrefecture) {
+                postQuery = query(postQuery, where('prefecture', '==', selectedPrefecture));
+            }
+            postQuery = query(postQuery, where('type', '==', selectedType));
+            postQuery = query(postQuery, where('genre', '==', selectedGenre));
+            getDocs(postQuery).then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    renderPost({ id: doc.id, ...doc.data() });
+                });
+            });
+        }
+        filterButton.addEventListener('click', applyFilter);
+
+        applyFilter();
+        </script>
+    </body>
+
+</html>

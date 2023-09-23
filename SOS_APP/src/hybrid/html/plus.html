@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>掲示板へ投稿</title>
+    <style>
+        .navbar {
+            background-color: red;
+            padding: 10px 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar .back-button {
+            background-color: white;
+            color: red;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .navbar .back-button:hover {
+            background-color: #f7f7f7;
+        }
+
+        /* ここにCSSスタイルを記述します。 */
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            margin: 0;
+            margin-top: -15px;
+            margin-bottom: 20px;
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+<div class="navbar">
+    <button class="back-button" onclick="window.history.back();">戻る</button>
+    <span>掲示板へ投稿</span>
+</div>
+
+<section>
+    <form id="postForm">
+        <div>
+            <label for="type">投稿タイプ:</label>
+            <select id="type">
+                <option value="null">選択してください</option>
+                <option value="災害">災害</option>
+                <option value="防災">防災</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="genre">ジャンル:</label>
+            <select id="genre">
+                <option value="null">選択してください</option>
+                <option value="飲料">飲料</option>
+                <option value="食料">食料</option>
+                <option value="持ち物">持ち物</option>
+                <option value="その他">その他</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="prefecture">都道府県:</label>
+            <select id="prefecture">
+                <option value="非公開">選択してください</option>
+                <option value="北海道">北海道</option>
+                <option value="青森県">青森県</option>
+                <option value="岩手県">岩手県</option>
+                <option value="宮城県">宮城県</option>
+                <option value="秋田県">秋田県</option>
+                <option value="山形県">山形県</option>
+                <option value="福島県">福島県</option>
+                <option value="茨城県">茨城県</option>
+                <option value="栃木県">栃木県</option>
+                <option value="群馬県">群馬県</option>
+                <option value="埼玉県">埼玉県</option>
+                <option value="千葉県">千葉県</option>
+                <option value="東京都">東京都</option>
+                <option value="神奈川県">神奈川県</option>
+                <option value="新潟県">新潟県</option>
+                <option value="富山県">富山県</option>
+                <option value="石川県">石川県</option>
+                <option value="福井県">福井県</option>
+                <option value="山梨県">山梨県</option>
+                <option value="長野県">長野県</option>
+                <option value="岐阜県">岐阜県</option>
+                <option value="静岡県">静岡県</option>
+                <option value="愛知県">愛知県</option>
+                <option value="三重県">三重県</option>
+                <option value="滋賀県">滋賀県</option>
+                <option value="京都府">京都府</option>
+                <option value="大阪府">大阪府</option>
+                <option value="兵庫県">兵庫県</option>
+                <option value="奈良県">奈良県</option>
+                <option value="和歌山県">和歌山県</option>
+                <option value="鳥取県">鳥取県</option>
+                <option value="島根県">島根県</option>
+                <option value="岡山県">岡山県</option>
+                <option value="広島県">広島県</option>
+                <option value="山口県">山口県</option>
+                <option value="徳島県">徳島県</option>
+                <option value="香川県">香川県</option>
+                <option value="愛媛県">愛媛県</option>
+                <option value="高知県">高知県</option>
+                <option value="福岡県">福岡県</option>
+                <option value="佐賀県">佐賀県</option>
+                <option value="長崎県">長崎県</option>
+                <option value="熊本県">熊本県</option>
+                <option value="大分県">大分県</option>
+                <option value="宮崎県">宮崎県</option>
+                <option value="鹿児島県">鹿児島県</option>
+                <option value="沖縄県">沖縄県</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="name">名前:</label>
+            <input type="text" id="name" placeholder="名前を入力">
+        </div>
+
+        <div>
+            <label for="content">投稿内容:</label>
+            <textarea id="content" placeholder="投稿内容を入力"></textarea>
+        </div>
+
+        <button type="button" id="submitButton">送信</button>
+
+
+    </form>
+</section>
+
+<script type="module">
+
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js';
+    import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js';
+
+    // Firebase の設定と初期化
+    const firebaseConfig = {
+        apiKey: "AIzaSyCnvOLOgM8A7888OnyZQUtgjPadc-aUGTc",
+        authDomain: "appsos-3bdab.firebaseapp.com",
+        projectId: "appsos-3bdab",
+        storageBucket: "appsos-3bdab.appspot.com",
+        messagingSenderId: "781085116494",
+        appId: "1:781085116494:web:fe579a52fac5615a361b1f",
+        measurementId: "G-0DKFDY6YQP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function formatDateForFirestore(date) {
+        const y = date.getFullYear();
+        const m = (date.getMonth() + 1).toString().padStart(2, '0');
+        const d = date.getDate().toString().padStart(2, '0');
+        const h = date.getHours().toString().padStart(2, '0');
+        const min = date.getMinutes().toString().padStart(2, '0');
+        const s = date.getSeconds().toString().padStart(2, '0');
+        return `${y}/${m}/${d} ${h}:${min}:${s}`;
+    }
+
+    function handleClick() {
+
+        const type = document.getElementById('type').value;
+        const genre = document.getElementById('genre').value;
+        const prefecture = document.getElementById('prefecture').value;
+        const name = document.getElementById('name').value;
+        const content = document.getElementById('content').value;
+
+        const date = formatDateForFirestore(new Date()); // この行を変更
+
+        const newPost = {
+            type: type,
+            genre: genre,
+            prefecture: prefecture,
+            name: name.slice(0, 10),
+            date: date,
+            content: content.slice(0, 200),
+            likes: 0
+        };
+
+        if (window.confirm('内容を送信します。よろしいですか？')) {
+            const postsCollection = collection(db, "posts");
+            addDoc(postsCollection, newPost)
+                .then(() => {
+                    console.log('Data written successfully.');
+                    document.getElementById('postForm').reset();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+        });
+        }
+    }  
+    window.handleClick = handleClick;
+    document.getElementById("submitButton").addEventListener("click", handleClick);
+
+</script>
+
+
+</body>
+</html>

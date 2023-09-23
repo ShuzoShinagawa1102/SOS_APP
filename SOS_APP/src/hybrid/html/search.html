@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>皆の災害情報</title>
+    <style>
+
+        .navbar {
+            background-color: red;
+            padding: 10px 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    
+        .navbar .back-button {
+            background-color: white;
+            color: red;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    
+        .navbar .back-button:hover {
+            background-color: #f7f7f7;
+        }
+    
+        .filter-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+    
+        .filterbutton {
+            width: 4em;
+            height: 2em;
+            text-align: center;
+            color: white;
+            background-color: rgb(0, 98, 255);
+            font-size: 80%;
+        }
+    
+        .heart {
+            position: absolute;
+            right: 20px;
+            bottom: 10px;
+        }
+
+        .heart img {
+            width: 1em;
+            height: 0.85em;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .heart span {
+            vertical-align: middle;
+        }
+        
+    
+        .post {
+            background-color: antiquewhite;
+            border-bottom: solid 2px blue;
+            padding: 10px;
+            position: relative;
+        }
+
+        .post p {
+            margin: 5px 0;
+        }
+        img.heart {
+            width: 1em;
+            height: 0.85em;
+            margin-left: 5px;
+            padding: 0;
+        }
+        .filter-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="navbar">
+            <button class="back-button" onclick="window.location.href='./home.html';">戻る</button>
+            <span>ワード検索</span>
+        </div>
+    
+        <div class="filter-area">
+            <input type="text" id="searchBox" placeholder="抽出ワード">
+            <button class="filterbutton">抽出</button>
+        </div>
+
+        <div id="postsContainer">
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js';
+        import { getFirestore, collection, doc, updateDoc, getDocs, query, where, getDoc } from 'https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js';
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyCnvOLOgM8A7888OnyZQUtgjPadc-aUGTc",
+                authDomain: "appsos-3bdab.firebaseapp.com",
+                projectId: "appsos-3bdab",
+                storageBucket: "appsos-3bdab.appspot.com",
+                messagingSenderId: "781085116494",
+                appId: "1:781085116494:web:fe579a52fac5615a361b1f",
+                measurementId: "G-0DKFDY6YQP"
+            };
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+        
+            const filterButton = document.querySelector('.filterbutton');
+            const postsContainer = document.getElementById('postsContainer');
+            filterButton.addEventListener('click', applyFilter);
+    
+            function renderPost(post) {
+                const postDiv = document.createElement('div');
+                postDiv.classList.add('post');
+                postDiv.innerHTML = `
+                    <p>投稿タイプ: ${post.type}</p>
+                    <p>${post.prefecture}</p>
+                    <p>${post.date}</p>
+                    <p><strong>名前:</strong> ${post.name}</p>
+                    <p><strong>内容:</strong> ${post.content}</p>
+                    <div class="heart">
+                        <img class="like-button heart" src="./core/images/heart.png" data-post-id="${post.id}">
+                        <span>${post.likes}</span> 
+                    </div>
+                `;
+                postsContainer.appendChild(postDiv);
+    
+                const likeButton = postDiv.querySelector('.like-button');
+                likeButton.addEventListener('click', function() {
+                    likePost(post.id);
+                });
+            }
+    
+            function applyFilter() {
+    postsContainer.innerHTML = '';
+    const searchText = document.getElementById('searchBox').value.toLowerCase();
+    
+    getDocs(collection(db, 'posts')).then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+            const postData = doc.data();
+            if (!searchText || postData.content.toLowerCase().includes(searchText)) {
+                renderPost({ id: doc.id, ...postData });
+            }
+        });
+    });
+}
+
+
+
+    
+            function likePost(postId) {
+                const postRef = doc(db, 'posts', postId);
+                let likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+    
+                const updateUIForPost = (postId, likes) => {
+                    const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+                    if (postElement) {
+                        const likeSpan = postElement.nextElementSibling;
+                        if (likeSpan) {
+                            likeSpan.textContent = likes;
+                        }
+                    }
+                };
+    
+                if (likedPosts.includes(postId)) {
+                    getDoc(postRef).then(docSnapshot => {
+                        if (docSnapshot.exists()) {
+                            const likes = docSnapshot.data().likes || 0;
+                            const newLikes = Math.max(likes - 1, 0);
+                            updateDoc(postRef, { likes: newLikes }).then(() => {
+                                updateUIForPost(postId, newLikes);
+                            });
+                        }
+                    });
+                    likedPosts = likedPosts.filter(id => id !== postId);
+                } else {
+                    getDoc(postRef).then(docSnapshot => {
+                        if (docSnapshot.exists()) {
+                            const likes = docSnapshot.data().likes || 0;
+                            const newLikes = likes + 1;
+                            updateDoc(postRef, { likes: newLikes }).then(() => {
+                                updateUIForPost(postId, newLikes);
+                            });
+                        }
+                    });
+                    likedPosts.push(postId);
+                }
+    
+                localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+            }
+    
+            applyFilter();
+        });
+    </script>
+    
+</body>
+</html>
